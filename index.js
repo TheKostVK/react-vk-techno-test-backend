@@ -2,19 +2,16 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from 'cors';
 
-import {PostController, UserController} from './controllers/index.js';
-import {loginValidation, postCreateValidation, registerValidation} from "./validations.js";
-import {checkAuth, handleValidationErrors} from './utils/index.js';
+import {loginValidation, registerValidation, postCreateValidation} from "./validations/index.js";
+import {checkAuth, handleValidationErrors, } from './utils/index.js';
+import {UserController, PostController} from "./controllers/index.js"
 import multer from 'multer';
 import {Dropbox} from 'dropbox';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-
-mongoose.connect(
-    process.env.REACT_APP_API_DB_URL
-).then(() => console.log('DB ok')).catch((err) => console.log('DB error', err));
+mongoose.connect(process.env.REACT_APP_API_DB_URL).then(() => console.log('DB ok')).catch((err) => console.log('DB error', err));
 
 
 const app = express();
@@ -28,7 +25,6 @@ const dbx = new Dropbox({accessToken: process.env.DROPBOX_ACCESS_TOKEN});
 
 // Загрузчик файла с настройками хранения
 const upload = multer();
-
 
 app.post('/upload', cors(), upload.single('image'), async (req, res) => {
     try {
@@ -73,16 +69,16 @@ app.post('/auth/login', cors(), loginValidation, handleValidationErrors, UserCon
 app.post('/auth/registration', cors(), registerValidation, handleValidationErrors, UserController.register);
 app.get('/auth/me', cors(), checkAuth, UserController.getMe)
 
-// app.get('/tags',cors(), PostController.getLastTags);
 
 app.get('/posts', cors(), PostController.getAll);
+// app.get('/posts/user/:userId', cors(), PostController.getAllByAuthor);
 app.get('/posts/tags', cors(), PostController.getLastTags);
 app.get('/posts/:id', cors(), PostController.getOne);
 app.post('/posts', cors(), checkAuth, postCreateValidation, handleValidationErrors, PostController.create);
 app.delete('/posts/:id', cors(), checkAuth, PostController.remove);
 app.patch('/posts/:id', cors(), checkAuth, postCreateValidation, handleValidationErrors, PostController.update);
 
-app.listen(process.env.PORT || 4444, (err) => {
+app.listen(process.env.PORT, (err) => {
     if (err) {
         return console.log(err);
     }
