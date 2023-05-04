@@ -13,7 +13,6 @@ dotenv.config();
 
 mongoose.connect(process.env.REACT_APP_API_DB_URL).then(() => console.log('DB ok')).catch((err) => console.log('DB error', err));
 
-
 const app = express();
 
 app.use(cors());
@@ -63,7 +62,7 @@ app.post('/upload', cors(), upload.single('image'), async (req, res) => {
 });
 
 
-app.use('/media', express.static('media'));
+// app.use('/media', express.static('media'));
 
 app.post('/auth/login', cors(), loginValidation, handleValidationErrors, UserController.login);
 app.post('/auth/registration', cors(), registerValidation, handleValidationErrors, UserController.register);
@@ -72,7 +71,7 @@ app.get('/auth/me', cors(), checkAuth, UserController.getMe)
 
 app.get('/posts', cors(), PostController.getAll);
 // app.get('/posts/user/:userId', cors(), PostController.getAllByAuthor);
-app.get('/posts/tags', cors(), PostController.getLastTags);
+// app.get('/posts/tags', cors(), PostController.getLastTags);
 app.get('/posts/:id', cors(), PostController.getOne);
 app.post('/posts', cors(), checkAuth, postCreateValidation, handleValidationErrors, PostController.create);
 app.delete('/posts/:id', cors(), checkAuth, PostController.remove);
