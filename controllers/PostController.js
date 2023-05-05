@@ -1,20 +1,20 @@
 import PostModel from '../models/Post.js';
 
-export const getLastTags = async (req, res) => {
-    try {
-
-        const posts = await PostModel.find().limit(5).exec();
-
-        const tags = posts.map(obj => obj.tags).flat().slice(0, 5);
-
-        res.json(tags);
-    } catch (err) {
-        console.log(err)
-        res.status(500).json({
-            message: 'Не удалось получить теги',
-        });
-    }
-};
+// export const getLastTags = async (req, res) => {
+//     try {
+//
+//         const posts = await PostModel.find().limit(5).exec();
+//
+//         const tags = posts.map(obj => obj.tags).flat().slice(0, 5);
+//
+//         res.json(tags);
+//     } catch (err) {
+//         console.log(err)
+//         res.status(500).json({
+//             message: 'Не удалось получить теги',
+//         });
+//     }
+// };
 
 export const getAll = async (req, res) => {
     try {
@@ -61,6 +61,36 @@ export const getOne = async (req, res) => {
     }
 };
 
+// dnt work
+export const getAllByAuthor = async (req, res) => {
+    try {
+        const authorId = req.params.id;
+
+        const post = await PostModel.findOneAndUpdate(
+            {
+                user: {
+                    "_id": authorId,
+                }
+            },
+            {
+                returnDocument: 'after',
+            }
+        ).populate('user').exec();
+
+        if (!post) {
+            return res.status(404).json({
+                message: 'Статья не найдена',
+            });
+        }
+
+        res.json(post);
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            message: 'Не удалось получить статью',
+        });
+    }
+};
 
 export const create = async (req, res) => {
     try {
