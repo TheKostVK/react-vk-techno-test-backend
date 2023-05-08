@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const PostSchema = new mongoose.Schema({
         title: {
             type: String,
-            required: true,
+            required: false,
         },
         text: {
             type: String,
@@ -13,9 +13,13 @@ const PostSchema = new mongoose.Schema({
             type: Array,
             default: [],
         },
+        imageUrl: {
+            type: Array,
+            default: [],
+        },
         viewsCount: {
             type: Number,
-            default: 0,
+            default: 1,
 
         },
         likesCount: {
@@ -28,7 +32,6 @@ const PostSchema = new mongoose.Schema({
             ref: 'User',
             required: true,
         },
-        imageUrl: String,
     },
     {
         timestamps: true,
