@@ -43,9 +43,12 @@ export const getPostOnPage = async (req, res) => {
             .populate('user')
             .sort({createdAt: -1})
             .skip(offset)
-            .limit(Math.min(perPage, totalPosts - offset))
-            .updateMany({}, { $inc: { viewsCount: 1 } })
-            .exec();
+            .limit(Math.min(perPage, totalPosts - offset));
+
+        // добавляем инкремент viewsCount в каждый пост
+        for (const post of posts) {
+            await PostModel.findByIdAndUpdate(post._id, {$inc: {viewsCount: 1}});
+        }
 
         res.json({
             posts,
@@ -63,6 +66,7 @@ export const getPostOnPage = async (req, res) => {
         });
     }
 };
+
 
 
 
