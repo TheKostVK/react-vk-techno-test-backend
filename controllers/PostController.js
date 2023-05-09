@@ -43,7 +43,9 @@ export const getPostOnPage = async (req, res) => {
             .populate('user')
             .sort({createdAt: -1})
             .skip(offset)
-            .limit(Math.min(perPage, totalPosts - offset));
+            .limit(Math.min(perPage, totalPosts - offset))
+            .updateMany({}, { $inc: { viewsCount: 1 } })
+            .exec();
 
         res.json({
             posts,
@@ -61,6 +63,7 @@ export const getPostOnPage = async (req, res) => {
         });
     }
 };
+
 
 
 export const getAllByAuthor = async (req, res) => {
