@@ -77,8 +77,8 @@ app.get('/profile/:id', cors(), checkAuth, UserController.getUserById);
 // app.get('/tags',cors(), PostController.getLastTags);
 
 app.get('/posts', cors(), PostController.getAll);
-app.get('/posts/:id/addLike', cors(), PostController.addLike);
-app.get('/posts/:id/removeLike', cors(), PostController.removeLike);
+app.post('/posts/:id/addLike', cors(), PostController.addLike);
+app.post('/posts/:id/removeLike', cors(), PostController.removeLike);
 app.get('/posts/p', cors(), PostController.getPostOnPage);
 app.get('/posts/user/:userId/p', cors(), PostController.getAllByAuthor);
 app.get('/posts/tags', cors(), PostController.getLastTags);
