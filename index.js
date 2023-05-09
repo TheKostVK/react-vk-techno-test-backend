@@ -29,7 +29,6 @@ const dbx = new Dropbox({accessToken: process.env.DROPBOX_ACCESS_TOKEN});
 // Загрузчик файла с настройками хранения
 const upload = multer();
 
-
 app.post('/upload', cors(), upload.single('image'), async (req, res) => {
     try {
         const file = req.file.buffer;
