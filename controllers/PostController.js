@@ -138,14 +138,19 @@ export const getOne = async (req, res) => {
 
 export const addLike = async (req, res) => {
     try {
-        const postId = req.params.id;
+        const postId = req.params.postId;
+        const userId = req.params.userId;
 
         const post = await PostModel.findOneAndUpdate(
             {
                 _id: postId,
+                likes: {
+                    $ne: userId // Проверяем, что пользователь еще не лайкнул пост
+                }
             },
             {
-                $inc: {likesCount: 1},
+                $addToSet: { likes: userId },
+                $inc: { likesCount: 1 } // Увеличиваем счетчик лайков на 1
             },
             {
                 new: true,
@@ -169,14 +174,17 @@ export const addLike = async (req, res) => {
 
 export const removeLike = async (req, res) => {
     try {
-        const postId = req.params.id;
+        const postId = req.params.postId;
+        const userId = req.params.userId;
 
         const post = await PostModel.findOneAndUpdate(
             {
                 _id: postId,
+                likes: userId // Проверяем, что пользователь лайкнул пост
             },
             {
-                $inc: {likesCount: -1},
+                $pull: { likes: userId },
+                $inc: { likesCount: -1 } // Уменьшаем счетчик лайков на 1
             },
             {
                 new: true,
@@ -197,7 +205,6 @@ export const removeLike = async (req, res) => {
         });
     }
 };
-
 
 export const create = async (req, res) => {
     try {
