@@ -76,7 +76,7 @@ export const getAllByAuthor = async (req, res) => {
     const {userId} = req.params;
 
     try {
-        const totalPosts = await PostModel.countDocuments();
+        const totalPosts = await PostModel.countDocuments({ user: userId });
 
         const totalPages = Math.ceil(totalPosts / perPage);
 

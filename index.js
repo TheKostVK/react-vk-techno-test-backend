@@ -74,6 +74,9 @@ app.get('/auth/me', cors(), checkAuth, UserController.getMe);
 
 app.get('/profile/:id', cors(), checkAuth, UserController.getUserById);
 
+app.post('/profile/:userId/addFriend/:friendId', cors(), checkAuth, UserController.addFriend);
+app.post('/profile/:userId/removeFriend/:friendId', cors(), checkAuth, UserController.removeFriend);
+
 // app.get('/tags',cors(), PostController.getLastTags);
 
 app.get('/posts', cors(), PostController.getAll);

@@ -120,3 +120,65 @@ export const getUserById = async (req, res) => {
         res.status(500).json({ message: 'Отказано в доступе' });
     }
 };
+
+export const addFriend = async (req, res) => {
+    try {
+        const { userId, friendId } = req.params;
+
+        // Проверяем, что пользователь с таким id существует
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'Пользователь не найден' });
+        }
+
+        // Проверяем, что пользователь, которого хотим добавить в друзья, существует
+        const friend = await UserModel.findById(friendId);
+        if (!friend) {
+            return res.status(404).json({ message: 'Пользователь не найден' });
+        }
+
+        // Проверяем, что пользователь, которого хотим добавить в друзья, не является уже другом
+        if (user.friends.includes(friendId)) {
+            return res.status(400).json({ message: 'Пользователь уже является другом' });
+        }
+
+        // Добавляем пользователя в список друзей
+        await UserModel.findByIdAndUpdate(userId, { $push: { friends: friendId } });
+
+        res.json({ message: 'Пользователь успешно добавлен в друзья' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Не удалось добавить пользователя в друзья' });
+    }
+};
+
+export const removeFriend = async (req, res) => {
+    try {
+        const { userId, friendId } = req.params;
+
+        // Проверяем, что пользователь с таким id существует
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'Пользователь не найден' });
+        }
+
+        // Проверяем, что пользователь, которого хотим удалить из друзей, существует
+        const friend = await UserModel.findById(friendId);
+        if (!friend) {
+            return res.status(404).json({ message: 'Пользователь не найден' });
+        }
+
+        // Проверяем, что пользователь, которого хотим удалить из друзей, является другом
+        if (!user.friends.includes(friendId)) {
+            return res.status(400).json({ message: 'Пользователь не является другом' });
+        }
+
+        // Удаляем пользователя из списка друзей
+        await UserModel.findByIdAndUpdate(userId, { $pull: { friends: friendId } });
+
+        res.json({ message: 'Пользователь успешно удален из друзей' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Не удалось удалить пользователя из друзей' });
+    }
+};
